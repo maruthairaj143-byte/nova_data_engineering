@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
@@ -12,7 +14,7 @@ DB_CONFIG = {
     "port":     5432,
     "database": "postgres",
     "user":     "postgres",
-    "password": "os.environ.get("PGPASSWORD")"
+    "password": os.environ.get("PGPASSWORD")
 }
 
 # --- 1. SQLAlchemy Engine ---

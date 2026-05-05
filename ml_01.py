@@ -12,10 +12,10 @@ DB_CONFIG = {
     "port":     5432,
     "database": "postgres",
     "user":     "postgres",
-    "password": "os.environ.get("PGPASSWORD")"
+    "password": os.environ.get("PGPASSWORD")
 }
 
-# --- 1. Load Data ---
+# --- 1. Load Data --
 print("Data Loading...")
 conn = psycopg2.connect(**DB_CONFIG)
 df = pd.read_sql("""

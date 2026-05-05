@@ -12,7 +12,7 @@ DB_CONFIG = {
     "port":     5432,
     "database": "postgres",
     "user":     "postgres",
-    "password": "os.environ.get("PGPASSWORD")"
+    "password": os.environ.get("PGPASSWORD")
 }
 
 # --- 1. Load Data ---

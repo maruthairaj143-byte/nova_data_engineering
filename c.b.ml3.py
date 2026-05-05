@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
@@ -13,7 +15,7 @@ DB_CONFIG = {
     "port":     5432,
     "dbname":   "postgres",
     "user":     "postgres",
-    "password": "os.environ.get("PGPASSWORD")",
+    "password": os.environ.get("PGPASSWORD"),
 }
 
 engine = create_engine(

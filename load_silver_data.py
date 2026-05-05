@@ -18,7 +18,7 @@ CONFIG = {
     "db_port": 5432,
     "db_name": "postgres",
     "db_user": "postgres",
-    "db_password": "os.environ.get("PGPASSWORD"),
+    "db_password": os.environ.get("PGPASSWORD"),
     "created_by": "etl_user",
     "updated_by": "etl_user",
     "batch_id": int(date.today().strftime("%Y%m%d")),

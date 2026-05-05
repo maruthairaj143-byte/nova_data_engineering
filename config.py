@@ -35,7 +35,7 @@ DB_CONFIG = {
     "port": os.environ.get("PGPORT", "5432"),
     "dbname": os.environ.get("PGDATABASE", "postgres"),
     "user": os.environ.get("PGUSER", "postgres"),
-    "password": os.environ.get("PGPASSWORD", "os.environ.get("PGPASSWORD")"),
+    "password": os.environ.get("PGPASSWORD"),
 }
 
 # Optional: connection string (useful for SQLAlchemy)

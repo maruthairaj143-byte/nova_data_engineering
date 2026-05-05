@@ -13,7 +13,7 @@ conn = psycopg2.connect(
     port=5432,
     dbname="postgres",
     user="postgres",
-    password="os.environ.get("PGPASSWORD")"
+    password=os.environ.get("PGPASSWORD")
 )
 
 cur = conn.cursor()
