@@ -13,7 +13,7 @@ DB_CONFIG = {
     "port":     5432,
     "dbname":   "postgres",
     "user":     "postgres",
-    "password": "maruthu",
+    "password": "os.environ.get("PGPASSWORD")",
 }
 
 engine = create_engine(
