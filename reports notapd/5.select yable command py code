@@ -1,0 +1,149 @@
+-- =============================================================
+--  Nova Marathon Data Engineering Project
+--  Full PostgreSQL Script : SELECT all tables
+--  Layers : Bronze | Silver | Gold
+-- =============================================================
+
+
+-- =============================================================
+--  BRONZE LAYER  (public schema)
+-- =============================================================
+
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_client
+-- ─────────────────────────────────────────────
+SELECT * FROM public.raw_client;
+
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_result
+-- ─────────────────────────────────────────────
+SELECT * FROM public.raw_result;
+
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_event
+-- ─────────────────────────────────────────────
+SELECT * FROM public.raw_event;
+
+-- ─────────────────────────────────────────────
+-- BRONZE: client_all  (consolidated)
+-- ─────────────────────────────────────────────
+SELECT * FROM public.client_all;
+
+-- ─────────────────────────────────────────────
+-- BRONZE: result_all  (consolidated)
+-- ─────────────────────────────────────────────
+SELECT * FROM public.result_all;
+
+-- ─────────────────────────────────────────────
+-- BRONZE: event_all  (consolidated)
+-- ─────────────────────────────────────────────
+SELECT * FROM public.event_all;
+
+
+-- =============================================================
+--  SILVER LAYER  (public schema)
+-- =============================================================
+
+-- ─────────────────────────────────────────────
+-- SILVER: stg_client_result
+-- ─────────────────────────────────────────────
+SELECT * FROM public.stg_client_result;
+
+-- ─────────────────────────────────────────────
+-- SILVER: stg_event
+-- ─────────────────────────────────────────────
+SELECT * FROM public.stg_event;
+
+
+-- =============================================================
+--  GOLD LAYER  (gold schema)
+-- =============================================================
+
+-- ─────────────────────────────────────────────
+-- GOLD: dim_client
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.dim_client;
+
+-- ─────────────────────────────────────────────
+-- GOLD: dim_event
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.dim_event;
+
+-- ─────────────────────────────────────────────
+-- GOLD: dim_location
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.dim_location;
+
+-- ─────────────────────────────────────────────
+-- GOLD: dim_sponsor
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.dim_sponsor;
+
+-- ─────────────────────────────────────────────
+-- GOLD: dim_date
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.dim_date;
+
+-- ─────────────────────────────────────────────
+-- GOLD: fact_race_result
+-- ─────────────────────────────────────────────
+SELECT * FROM gold.fact_race_result;
+
+
+-- =============================================================
+--  ROW COUNT — All tables at a glance
+-- =============================================================
+
+SELECT 'public.raw_client'       AS table_name, COUNT(*) AS row_count FROM public.raw_client
+UNION ALL
+SELECT 'public.raw_result',                      COUNT(*) FROM public.raw_result
+UNION ALL
+SELECT 'public.raw_event',                        COUNT(*) FROM public.raw_event
+UNION ALL
+SELECT 'public.client_all',                       COUNT(*) FROM public.client_all
+UNION ALL
+SELECT 'public.result_all',                       COUNT(*) FROM public.result_all
+UNION ALL
+SELECT 'public.event_all',                        COUNT(*) FROM public.event_all
+UNION ALL
+SELECT 'public.stg_client_result',                COUNT(*) FROM public.stg_client_result
+UNION ALL
+SELECT 'public.stg_event',                        COUNT(*) FROM public.stg_event
+UNION ALL
+SELECT 'gold.dim_client',                         COUNT(*) FROM gold.dim_client
+UNION ALL
+SELECT 'gold.dim_event',                          COUNT(*) FROM gold.dim_event
+UNION ALL
+SELECT 'gold.dim_location',                       COUNT(*) FROM gold.dim_location
+UNION ALL
+SELECT 'gold.dim_sponsor',                        COUNT(*) FROM gold.dim_sponsor
+UNION ALL
+SELECT 'gold.dim_date',                           COUNT(*) FROM gold.dim_date
+UNION ALL
+SELECT 'gold.fact_race_result',                   COUNT(*) FROM gold.fact_race_result
+ORDER BY table_name;
+
+
+-- =============================================================
+--  SELECT WITH LIMIT 10 — Quick preview of all tables
+-- =============================================================
+
+-- ─── Bronze ───
+SELECT * FROM public.raw_client    LIMIT 10;
+SELECT * FROM public.raw_result    LIMIT 10;
+SELECT * FROM public.raw_event     LIMIT 10;
+SELECT * FROM public.client_all    LIMIT 10;
+SELECT * FROM public.result_all    LIMIT 10;
+SELECT * FROM public.event_all     LIMIT 10;
+
+-- ─── Silver ───
+SELECT * FROM public.stg_client_result LIMIT 10;
+SELECT * FROM public.stg_event         LIMIT 10;
+
+-- ─── Gold ───
+SELECT * FROM gold.dim_client       LIMIT 10;
+SELECT * FROM gold.dim_event        LIMIT 10;
+SELECT * FROM gold.dim_location     LIMIT 10;
+SELECT * FROM gold.dim_sponsor      LIMIT 10;
+SELECT * FROM gold.dim_date         LIMIT 10;
+SELECT * FROM gold.fact_race_result LIMIT 10;

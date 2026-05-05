@@ -1,0 +1,22 @@
+CREATE TABLE Marathon_Events (
+    Event_ID INT PRIMARY KEY,
+    Event_Name VARCHAR(255),
+    Marathon_Type VARCHAR(100),
+    Organizer_Name VARCHAR(255),
+    Event_Status VARCHAR(50),
+    Event_Category VARCHAR(100),
+    Sponsor_Name VARCHAR(255),
+    Sponsor_Type VARCHAR(100),
+    Contribution_Amount DECIMAL(10,2),
+    City VARCHAR(100),
+    State VARCHAR(100),
+    Country VARCHAR(100),
+    Venue_Name VARCHAR(255),
+
+    created_by VARCHAR(100),
+    created_at TIMESTAMP,
+    updated_by VARCHAR(100),
+    updated_at TIMESTAMP,
+
+    Batch_ID INT
+);

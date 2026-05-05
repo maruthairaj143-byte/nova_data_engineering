@@ -1,0 +1,69 @@
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_client  (from nova_registration.csv)
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.raw_client (
+    id             TEXT,
+    first_name     TEXT,
+    last_name      TEXT,
+    dob            TEXT,
+    gender         TEXT,
+    city           TEXT,
+    state          TEXT,
+    blood_group    TEXT,
+    mobile_number  TEXT,
+    event_id       TEXT,
+    distance       TEXT,       -- kept as TEXT (fixed in ETL)
+    created_by     VARCHAR(50),
+    created_at     TIMESTAMP,
+    updated_by     VARCHAR(50),
+    updated_at     TIMESTAMP,
+    batch_id       INTEGER
+);
+
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_result  (from nova_result.csv)
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.raw_result (
+    mobile_no      TEXT,
+    split4         TEXT,
+    teamrank       INTEGER,
+    distance       TEXT,
+    chiptime       TEXT,
+    created_by     VARCHAR(50),
+    created_at     TIMESTAMP,
+    updated_by     VARCHAR(50),
+    updated_at     TIMESTAMP,
+    batch_id       INTEGER
+);
+
+-- ─────────────────────────────────────────────
+-- BRONZE: raw_event  (from nova_event.csv)
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.raw_event (
+    event_id            TEXT,
+    event_name          TEXT,
+    event_date          TEXT,
+    marathon_type       TEXT,
+    organizer_name      TEXT,
+    event_status        TEXT,
+    event_category      TEXT,
+    sponsor_name        TEXT,
+    sponsor_type        TEXT,
+    contribution_amount TEXT,
+    city                TEXT,
+    state               TEXT,
+    country             TEXT,
+    venue_name          TEXT,
+    created_by          VARCHAR(50),
+    created_at          TIMESTAMP,
+    updated_by          VARCHAR(50),
+    updated_at          TIMESTAMP,
+    batch_id            INTEGER
+);
+
+-- ─────────────────────────────────────────────
+-- BRONZE: Final / consolidated tables
+-- ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.client_all (LIKE public.raw_client INCLUDING ALL);
+CREATE TABLE IF NOT EXISTS public.result_all (LIKE public.raw_result INCLUDING ALL);
+CREATE TABLE IF NOT EXISTS public.event_all  (LIKE public.raw_event  INCLUDING ALL);

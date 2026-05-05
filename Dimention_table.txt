@@ -1,0 +1,111 @@
+
+CREATE TABLE client_details (
+    client_key        SERIAL PRIMARY KEY,
+    first_name        VARCHAR(50),
+    last_name         VARCHAR(50),
+    date_of_birth     DATE,
+    gender            VARCHAR(10),
+    city              VARCHAR(50),
+    state             VARCHAR(50),
+    blood_group       VARCHAR(5),
+    mobile_number     VARCHAR(15),
+    created_by        VARCHAR(50),
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by        VARCHAR(50),
+    updated_at        TIMESTAMP,
+    batch_id          INTEGER
+);
+
+
+
+CREATE TABLE event_details (
+    event_key              SERIAL PRIMARY KEY,
+    event_name             VARCHAR(100),
+    marathon_type          VARCHAR(20),  -- (5K / 10K / Half / Full)
+    organizer_name         VARCHAR(100),
+    event_status           VARCHAR(30),
+    event_category         VARCHAR(50),
+    analytics_example      TEXT,
+    participation_by_race_type TEXT,
+    created_by             VARCHAR(50),
+    created_at             TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by             VARCHAR(50),
+    updated_at             TIMESTAMP,
+    batch_id               INTEGER
+);
+
+
+
+CREATE TABLE date_dimension (
+    date_key        INTEGER PRIMARY KEY,
+    date            DATE,
+    day             INTEGER,
+    week            INTEGER,
+    month           INTEGER,
+    quarter         INTEGER,
+    year            INTEGER,
+    weekend_flag    BOOLEAN,
+    holiday_flag    BOOLEAN,
+    created_by      VARCHAR(50),
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by      VARCHAR(50),
+    updated_at      TIMESTAMP,
+    batch_id        INTEGER
+);
+
+
+
+CREATE TABLE location_details (
+    location_key   SERIAL PRIMARY KEY,
+    city           VARCHAR(50),
+    state          VARCHAR(50),
+    country        VARCHAR(50),
+    venue_name     VARCHAR(100),
+    created_by     VARCHAR(50),
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by     VARCHAR(50),
+    updated_at     TIMESTAMP,
+    batch_id       INTEGER
+);
+
+
+CREATE TABLE sponsor_details (
+    sponsor_key          SERIAL PRIMARY KEY,
+    sponsor_name         VARCHAR(100),
+    sponsor_type         VARCHAR(50),
+    contribution_amount  NUMERIC(12,2),
+    created_by           VARCHAR(50),
+    created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by           VARCHAR(50),
+    updated_at           TIMESTAMP,
+    batch_id             INTEGER
+);
+
+
+
+CREATE TABLE event_participation (
+    client_key        INTEGER,
+    event_key         INTEGER,
+    date_key          INTEGER,
+    sponsor_key       INTEGER,
+    location_key      INTEGER,
+    finish_time       INTERVAL,
+    rank              INTEGER,
+    distance          VARCHAR(20),
+    timing_chip_data  TEXT,
+    created_by        VARCHAR(50),
+    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by        VARCHAR(50),
+    updated_at        TIMESTAMP,
+    batch_id          INTEGER,
+
+    -- Composite Primary Key (optional)
+    PRIMARY KEY (client_key, event_key, date_key),
+
+    -- Foreign Keys
+    FOREIGN KEY (client_key) REFERENCES client_details(client_key),
+    FOREIGN KEY (event_key) REFERENCES event_details(event_key),
+    FOREIGN KEY (date_key) REFERENCES date_dimension(date_key),
+    FOREIGN KEY (sponsor_key) REFERENCES sponsor_details(sponsor_key),
+    FOREIGN KEY (location_key) REFERENCES location_details(location_key)
+);

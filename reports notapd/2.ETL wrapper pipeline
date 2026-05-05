@@ -1,0 +1,252 @@
+"""
+=============================================================
+  Nova Marathon — Master ETL Pipeline Wrapper
+  Runs the following scripts in order:
+    1. config.py              (validation check)
+    2. load_bronze_all_data.py
+    3. load_silver_data.py
+    4. new_fact_gold.py
+  Logs : etl_master_pipeline.log + terminal (stdout)
+=============================================================
+  Usage:
+      python run_pipeline.py
+=============================================================
+"""
+
+import subprocess
+import sys
+import logging
+import os
+import time
+from datetime import datetime
+
+# =============================================================
+# LOG FILE SETUP
+# =============================================================
+
+LOG_FILE = "etl_master_pipeline.log"
+
+# Custom formatter with separator support
+class SeparatorFormatter(logging.Formatter):
+    def format(self, record):
+        if getattr(record, "separator", False):
+            return record.getMessage()
+        return super().format(record)
+
+formatter = SeparatorFormatter(
+    fmt="%(asctime)s  %(levelname)-8s  %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+file_handler    = logging.FileHandler(LOG_FILE, mode="a", encoding="utf-8")
+stream_handler  = logging.StreamHandler(sys.stdout)
+
+file_handler.setFormatter(formatter)
+stream_handler.setFormatter(formatter)
+
+log = logging.getLogger("ETL_MASTER")
+log.setLevel(logging.INFO)
+log.addHandler(file_handler)
+log.addHandler(stream_handler)
+
+
+# =============================================================
+# HELPERS
+# =============================================================
+
+def sep(char="=", width=60):
+    """Print a separator line to both terminal and log file."""
+    line = char * width
+    record = logging.LogRecord(
+        name="ETL_MASTER", level=logging.INFO,
+        pathname="", lineno=0, msg=line,
+        args=(), exc_info=None
+    )
+    record.separator = True
+    for handler in log.handlers:
+        handler.emit(record)
+
+
+def log_banner(title: str):
+    sep("=")
+    log.info(f"  {title}")
+    sep("=")
+
+
+def log_sub(title: str):
+    sep("-")
+    log.info(f"  {title}")
+    sep("-")
+
+
+# =============================================================
+# PIPELINE STEPS DEFINITION
+# =============================================================
+
+PIPELINE_STEPS = [
+    {
+        "step"  : 1,
+        "label" : "BRONZE — CSV Ingestion → raw_client / raw_result / raw_event",
+        "script": "load_bronze_all_data.py",
+        "args"  : [],
+    },
+    {
+        "step"  : 2,
+        "label" : "SILVER — Bronze → stg_client_result / stg_event",
+        "script": "load_silver_data.py",
+        "args"  : [],
+    },
+    {
+        "step"  : 3,
+        "label" : "GOLD   — Silver → dim_* / fact_race_result",
+        "script": "new_fact_gold.py",
+        "args"  : [],
+    },
+]
+
+
+# =============================================================
+# STEP RUNNER
+# =============================================================
+
+def run_step(step_info: dict) -> tuple[bool, float]:
+    """
+    Runs one ETL script as a subprocess.
+    Streams every output line in real-time to log + terminal.
+    Returns (success: bool, elapsed_seconds: float).
+    """
+    script   = step_info["script"]
+    args     = step_info.get("args", [])
+    label    = step_info["label"]
+    step_num = step_info["step"]
+
+    log_sub(f"STEP {step_num} START  |  {label}")
+
+    # --- script existence check ---
+    if not os.path.isfile(script):
+        log.error(f"  Script not found: {script}")
+        log.error(f"  Make sure '{script}' is in the same folder as this wrapper.")
+        return False, 0.0
+
+    cmd     = [sys.executable, script] + args
+    t_start = time.perf_counter()
+    success = True
+
+    try:
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,   # merge stderr → stdout
+            text=True,
+            bufsize=1,                  # line-buffered
+        )
+
+        # Stream output line by line in real-time
+        for line in process.stdout:
+            stripped = line.rstrip()
+            if stripped:
+                log.info(f"    | {stripped}")
+
+        process.wait()
+
+        if process.returncode != 0:
+            log.error(f"  Script '{script}' exited with return code {process.returncode}")
+            success = False
+
+    except FileNotFoundError:
+        log.error(f"  Python interpreter not found: {sys.executable}")
+        success = False
+    except Exception as exc:
+        log.error(f"  Unexpected error while running '{script}': {exc}")
+        success = False
+
+    elapsed = time.perf_counter() - t_start
+    status  = "SUCCESS" if success else "FAILED"
+    icon    = "OK" if success else "XX"
+
+    sep("-")
+    log.info(f"  STEP {step_num} END  |  [{icon}] {status}  |  Time: {elapsed:.2f}s")
+    sep("-")
+
+    return success, elapsed
+
+
+# =============================================================
+# MAIN PIPELINE
+# =============================================================
+
+def main():
+    pipeline_start = datetime.now()
+
+    # ── Header ──────────────────────────────────────────────
+    log_banner("NOVA MARATHON  —  MASTER ETL PIPELINE")
+    log.info(f"  Pipeline start : {pipeline_start.strftime('%Y-%m-%d %H:%M:%S')}")
+    log.info(f"  Log file       : {os.path.abspath(LOG_FILE)}")
+    log.info(f"  Python         : {sys.executable}")
+    log.info(f"  Total steps    : {len(PIPELINE_STEPS)}")
+    sep()
+
+    results = []   # list of (step_num, label, success, elapsed)
+
+    # ── Run each step in order ───────────────────────────────
+    for step_info in PIPELINE_STEPS:
+        success, elapsed = run_step(step_info)
+        results.append((
+            step_info["step"],
+            step_info["label"],
+            success,
+            elapsed,
+        ))
+
+        if not success:
+            sep("!")
+            log.error(f"  PIPELINE ABORTED at Step {step_info['step']}")
+            log.error(f"  Fix the error above and re-run.")
+            sep("!")
+            break   # stop pipeline on first failure
+
+    # ── Summary Table ────────────────────────────────────────
+    pipeline_end     = datetime.now()
+    total_elapsed    = (pipeline_end - pipeline_start).total_seconds()
+    all_ok           = all(r[2] for r in results)
+    completed_steps  = len(results)
+
+    log_banner("PIPELINE SUMMARY")
+    log.info(f"  {'Step':<6} {'Status':<10} {'Time (s)':<12} Label")
+    sep("-")
+
+    for step_num, label, success, elapsed in results:
+        icon   = "[OK]" if success else "[XX]"
+        status = "SUCCESS" if success else "FAILED"
+        log.info(f"  {step_num:<6} {icon+' '+status:<10} {elapsed:<12.2f} {label}")
+
+    # Steps that were skipped (pipeline aborted early)
+    skipped = len(PIPELINE_STEPS) - completed_steps
+    if skipped > 0:
+        for step_info in PIPELINE_STEPS[completed_steps:]:
+            log.info(
+                f"  {step_info['step']:<6} {'[--] SKIPPED':<10} {'---':<12} {step_info['label']}"
+            )
+
+    sep("-")
+    log.info(f"  Start time  : {pipeline_start.strftime('%Y-%m-%d %H:%M:%S')}")
+    log.info(f"  End time    : {pipeline_end.strftime('%Y-%m-%d %H:%M:%S')}")
+    log.info(f"  Total time  : {total_elapsed:.2f}s")
+    sep()
+
+    if all_ok and completed_steps == len(PIPELINE_STEPS):
+        log.info("  *** ALL STEPS COMPLETED SUCCESSFULLY! ***")
+    else:
+        log.error("  *** PIPELINE COMPLETED WITH ERRORS — CHECK LOGS ABOVE ***")
+
+    sep("=")
+
+    sys.exit(0 if all_ok else 1)
+
+
+# =============================================================
+# ENTRY POINT
+# =============================================================
+
+if __name__ == "__main__":
+    main()

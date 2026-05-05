@@ -1,0 +1,507 @@
+-- Table: public.raw_client
+
+-- DROP TABLE IF EXISTS public.raw_client;
+
+CREATE TABLE IF NOT EXISTS public.raw_client
+(
+    id bigint,
+    first_name text COLLATE pg_catalog."default",
+    last_name text COLLATE pg_catalog."default",
+    email text COLLATE pg_catalog."default",
+    mobile_number bigint,
+    gender text COLLATE pg_catalog."default",
+    dob text COLLATE pg_catalog."default",
+    t_shirt_size text COLLATE pg_catalog."default",
+    name_bib text COLLATE pg_catalog."default",
+    blood_group text COLLATE pg_catalog."default",
+    emergency_contact_name text COLLATE pg_catalog."default",
+    emergency_contact_number bigint,
+    pincode bigint,
+    state text COLLATE pg_catalog."default",
+    city text COLLATE pg_catalog."default",
+    time_of_registration text COLLATE pg_catalog."default",
+    medical_issue text COLLATE pg_catalog."default",
+    category text COLLATE pg_catalog."default",
+    address text COLLATE pg_catalog."default",
+    runner_club text COLLATE pg_catalog."default",
+    age bigint,
+    distance text COLLATE pg_catalog."default",
+    order_number text COLLATE pg_catalog."default",
+    whatsapp_number bigint,
+    company text COLLATE pg_catalog."default",
+    coupon_code text COLLATE pg_catalog."default",
+    payment_id text COLLATE pg_catalog."default",
+    order_id text COLLATE pg_catalog."default",
+    payment_status text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default",
+    payment_order_id text COLLATE pg_catalog."default",
+    base_fees double precision,
+    platform_charges double precision,
+    platform_charges_gst double precision,
+    registration_gst double precision,
+    amount double precision,
+    payment_gway_charges double precision,
+    payment_gway_charges_gst double precision,
+    customer_pays double precision,
+    novarace_revenue double precision,
+    pg_charges double precision,
+    organizer_receives double precision,
+    event_id text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.raw_client
+    OWNER to postgres;
+	
+	
+	
+	
+	-- Table: public.raw_event
+
+-- DROP TABLE IF EXISTS public.raw_event;
+
+CREATE TABLE IF NOT EXISTS public.raw_event
+(
+    event_id text COLLATE pg_catalog."default" NOT NULL,
+    event_name text COLLATE pg_catalog."default",
+    event_date text COLLATE pg_catalog."default",
+    marathon_type text COLLATE pg_catalog."default",
+    organizer_name text COLLATE pg_catalog."default",
+    event_status text COLLATE pg_catalog."default",
+    event_category text COLLATE pg_catalog."default",
+    sponsor_name text COLLATE pg_catalog."default",
+    sponsor_type text COLLATE pg_catalog."default",
+    contribution_amount bigint,
+    city text COLLATE pg_catalog."default",
+    state text COLLATE pg_catalog."default",
+    country text COLLATE pg_catalog."default",
+    venue_name text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer,
+    CONSTRAINT raw_event_pkey PRIMARY KEY (event_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.raw_event
+    OWNER to postgres;
+	
+	
+	-- Table: public.raw_result
+
+-- DROP TABLE IF EXISTS public.raw_result;
+
+CREATE TABLE IF NOT EXISTS public.raw_result
+(
+    client_id bigint,
+    mobile_no bigint,
+    teamrank bigint,
+    team text COLLATE pg_catalog."default",
+    bib bigint,
+    name text COLLATE pg_catalog."default",
+    distance text COLLATE pg_catalog."default",
+    gender text COLLATE pg_catalog."default",
+    chiptime text COLLATE pg_catalog."default",
+    starttime text COLLATE pg_catalog."default",
+    split1distance text COLLATE pg_catalog."default",
+    split1 text COLLATE pg_catalog."default",
+    split2distance text COLLATE pg_catalog."default",
+    split2 text COLLATE pg_catalog."default",
+    split3distance text COLLATE pg_catalog."default",
+    split3 text COLLATE pg_catalog."default",
+    split4distance text COLLATE pg_catalog."default",
+    split4 text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.raw_result
+    OWNER to postgres;
+	
+	
+	
+	
+	-- Table: public.stg_client_result
+
+-- DROP TABLE IF EXISTS public.stg_client_result;
+
+CREATE TABLE IF NOT EXISTS public.stg_client_result
+(
+    id bigint,
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default",
+    date_of_birth date,
+    gender character varying(10) COLLATE pg_catalog."default",
+    city character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    blood_group character varying(5) COLLATE pg_catalog."default",
+    mobile_number character varying(15) COLLATE pg_catalog."default",
+    finish_time interval,
+    rank integer,
+    distance character varying(20) COLLATE pg_catalog."default",
+    timing_chip_data text COLLATE pg_catalog."default",
+    event_id bigint,
+    event_date date,
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.stg_client_result
+    OWNER to postgres;
+	
+	
+	-- Table: public.stg_event
+
+-- DROP TABLE IF EXISTS public.stg_event;
+
+CREATE TABLE IF NOT EXISTS public.stg_event
+(
+    event_id bigint,
+    event_name character varying(100) COLLATE pg_catalog."default",
+    event_date date,
+    marathon_type character varying(20) COLLATE pg_catalog."default",
+    organizer_name character varying(100) COLLATE pg_catalog."default",
+    event_status character varying(30) COLLATE pg_catalog."default",
+    event_category character varying(50) COLLATE pg_catalog."default",
+    sponsor_name character varying(100) COLLATE pg_catalog."default",
+    sponsor_type character varying(50) COLLATE pg_catalog."default",
+    contribution_amount numeric(12,2),
+    city character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    country character varying(50) COLLATE pg_catalog."default",
+    venue_name character varying(100) COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.stg_event
+    OWNER to postgres;
+	
+	
+	
+	
+	-- Table: public.client_all
+
+-- DROP TABLE IF EXISTS public.client_all;
+
+CREATE TABLE IF NOT EXISTS public.client_all
+(
+    id bigint,
+    first_name text COLLATE pg_catalog."default",
+    last_name text COLLATE pg_catalog."default",
+    email text COLLATE pg_catalog."default",
+    mobile_number bigint,
+    gender text COLLATE pg_catalog."default",
+    dob text COLLATE pg_catalog."default",
+    t_shirt_size text COLLATE pg_catalog."default",
+    name_bib text COLLATE pg_catalog."default",
+    blood_group text COLLATE pg_catalog."default",
+    emergency_contact_name text COLLATE pg_catalog."default",
+    emergency_contact_number bigint,
+    pincode bigint,
+    state text COLLATE pg_catalog."default",
+    city text COLLATE pg_catalog."default",
+    time_of_registration text COLLATE pg_catalog."default",
+    medical_issue text COLLATE pg_catalog."default",
+    category text COLLATE pg_catalog."default",
+    address text COLLATE pg_catalog."default",
+    runner_club text COLLATE pg_catalog."default",
+    age bigint,
+    distance text COLLATE pg_catalog."default",
+    order_number text COLLATE pg_catalog."default",
+    whatsapp_number bigint,
+    company text COLLATE pg_catalog."default",
+    coupon_code text COLLATE pg_catalog."default",
+    payment_id text COLLATE pg_catalog."default",
+    order_id text COLLATE pg_catalog."default",
+    payment_status text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default",
+    payment_order_id text COLLATE pg_catalog."default",
+    base_fees double precision,
+    platform_charges double precision,
+    platform_charges_gst double precision,
+    registration_gst double precision,
+    amount double precision,
+    payment_gway_charges double precision,
+    payment_gway_charges_gst double precision,
+    customer_pays double precision,
+    novarace_revenue double precision,
+    pg_charges double precision,
+    organizer_receives double precision,
+    event_id text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.client_all
+    OWNER to postgres
+	
+	
+	-- Table: public.event_all
+
+-- DROP TABLE IF EXISTS public.event_all;
+
+CREATE TABLE IF NOT EXISTS public.event_all
+(
+    event_id text COLLATE pg_catalog."default",
+    event_name text COLLATE pg_catalog."default",
+    event_date text COLLATE pg_catalog."default",
+    marathon_type text COLLATE pg_catalog."default",
+    organizer_name text COLLATE pg_catalog."default",
+    event_status text COLLATE pg_catalog."default",
+    event_category text COLLATE pg_catalog."default",
+    sponsor_name text COLLATE pg_catalog."default",
+    sponsor_type text COLLATE pg_catalog."default",
+    contribution_amount bigint,
+    city text COLLATE pg_catalog."default",
+    state text COLLATE pg_catalog."default",
+    country text COLLATE pg_catalog."default",
+    venue_name text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.event_all
+    OWNER to postgres;
+	
+	
+	
+	
+	-- Table: public.result_all
+
+-- DROP TABLE IF EXISTS public.result_all;
+
+CREATE TABLE IF NOT EXISTS public.result_all
+(
+    client_id bigint,
+    mobile_no bigint,
+    teamrank bigint,
+    team text COLLATE pg_catalog."default",
+    bib bigint,
+    name text COLLATE pg_catalog."default",
+    distance text COLLATE pg_catalog."default",
+    gender text COLLATE pg_catalog."default",
+    chiptime text COLLATE pg_catalog."default",
+    starttime text COLLATE pg_catalog."default",
+    split1distance text COLLATE pg_catalog."default",
+    split1 text COLLATE pg_catalog."default",
+    split2distance text COLLATE pg_catalog."default",
+    split2 text COLLATE pg_catalog."default",
+    split3distance text COLLATE pg_catalog."default",
+    split3 text COLLATE pg_catalog."default",
+    split4distance text COLLATE pg_catalog."default",
+    split4 text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.result_all
+    OWNER to postgres;
+	
+	
+	-- Table: public.dim_client
+
+-- DROP TABLE IF EXISTS public.dim_client;
+
+CREATE TABLE IF NOT EXISTS public.dim_client
+(
+    client_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default",
+    dob date,
+    gender character varying(10) COLLATE pg_catalog."default",
+    city character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    blood_group character varying(5) COLLATE pg_catalog."default",
+    mobile_number character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    created_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    updated_at timestamp without time zone DEFAULT now(),
+    batch_id integer DEFAULT 0,
+    CONSTRAINT dim_client_pkey PRIMARY KEY (client_key),
+    CONSTRAINT dim_client_mobile_number_key UNIQUE (mobile_number)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dim_client
+    OWNER to postgres;
+	
+	
+	
+	-- Table: public.dim_date
+
+-- DROP TABLE IF EXISTS public.dim_date;
+
+CREATE TABLE IF NOT EXISTS public.dim_date
+(
+    date_key character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    date dateA,
+    day integer,
+    week integer,
+    month integer,
+    quarter integer,
+    year integer,
+    weekend_flag boolean,
+    created_by character varying(50) COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying(50) COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    batch_id integer,
+    CONSTRAINT dim_date_pkey PRIMARY KEY (date_key)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dim_date
+    OWNER to postgres;
+	
+	
+	
+	-- Table: public.dim_event
+
+-- DROP TABLE IF EXISTS public.dim_event;
+
+CREATE TABLE IF NOT EXISTS public.dim_event
+(
+    event_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    event_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    marathon_type character varying(20) COLLATE pg_catalog."default",
+    organizer_name character varying(100) COLLATE pg_catalog."default",
+    venue_name character varying(100) COLLATE pg_catalog."default",
+    event_status character varying(30) COLLATE pg_catalog."default",
+    event_category character varying(50) COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    updated_at timestamp without time zone DEFAULT now(),
+    batch_id integer DEFAULT 0,
+    CONSTRAINT dim_event_pkey PRIMARY KEY (event_key),
+    CONSTRAINT dim_event_event_name_key UNIQUE (event_name)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dim_event
+    OWNER to postgres;
+	
+	
+	
+	-- Table: public.dim_location
+
+-- DROP TABLE IF EXISTS public.dim_location;
+
+CREATE TABLE IF NOT EXISTS public.dim_location
+(
+    location_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    city character varying(50) COLLATE pg_catalog."default",
+    state character varying(50) COLLATE pg_catalog."default",
+    country character varying(50) COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    updated_at timestamp without time zone DEFAULT now(),
+    batch_id integer DEFAULT 0,
+    CONSTRAINT dim_location_pkey PRIMARY KEY (location_key),
+    CONSTRAINT dim_location_city_state_key UNIQUE (city, state)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dim_location
+    OWNER to postgres;
+	
+	
+	-- Table: public.dim_sponsor
+
+-- DROP TABLE IF EXISTS public.dim_sponsor;
+
+CREATE TABLE IF NOT EXISTS public.dim_sponsor
+(
+    sponsor_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    sponsor_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    sponsor_type character varying(50) COLLATE pg_catalog."default",
+    contribution_amount numeric(12,2),
+    created_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    updated_at timestamp without time zone DEFAULT now(),
+    batch_id integer DEFAULT 0,
+    CONSTRAINT dim_sponsor_pkey PRIMARY KEY (sponsor_key),
+    CONSTRAINT dim_sponsor_sponsor_name_key UNIQUE (sponsor_name)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dim_sponsor
+    OWNER to postgres;
+	
+	
+	
+	-- Table: public.fact_race_result
+
+-- DROP TABLE IF EXISTS public.fact_race_result;
+
+CREATE TABLE IF NOT EXISTS public.fact_race_result
+(
+    client_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    event_key character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    date_key character varying(20) COLLATE pg_catalog."default",
+    sponsor_key character varying(20) COLLATE pg_catalog."default",
+    location_key character varying(20) COLLATE pg_catalog."default",
+    finish_time interval,
+    rank integer,
+    distance character varying(20) COLLATE pg_catalog."default",
+    timing_chip_data text COLLATE pg_catalog."default",
+    created_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_by character varying(50) COLLATE pg_catalog."default" DEFAULT 'system'::character varying,
+    updated_at timestamp without time zone DEFAULT now(),
+    batch_id integer DEFAULT 0,
+    CONSTRAINT fact_race_result_pkey PRIMARY KEY (client_key, event_key)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.fact_race_result
+    OWNER to postgres;
